@@ -74,25 +74,32 @@ class Go4Quiz:
                 go4 = Go4QuizQuestionGetter(sub_url.url, sub_url.title)
                 go4.main()
                 data['data'].append(go4.data)
-            self.write_to_file(data)
-            print('question scrapped form ' + url.url)
+                print("question scrapped from " + sub_url.url + " done.")
+            self.write_to_file(data, url.url)
+            print('question scrapped form ' + url.url + " done.")
 
-    def write_to_file(self, data):
+    def write_to_file(self, data, url):
         """
         write the given data into a file by creating the file and by converting the data into json format
+        :param url:
         :param data:
         """
-        file_name = self.generate_file_name()
+        file_name = self.generate_file_name(url)
         with open(file_name + '.txt', 'w') as json_file:
             json.dump(data, json_file)
 
-    def generate_file_name(self):
+    def generate_file_name(self, url):
         """
         generate file name from url and current date by converting it to unix date format
+        :param url:
         :return:
         """
-        temp = self.url.split('/')
+        temp = url.split('/')
         date_time = date.today()
         unix = time.mktime(date_time.timetuple())
-        if not temp[len(temp) - 1]:
-            return temp[len(temp) - 1] + "-" + str(date_time)
+        if temp[len(temp) - 1]:
+            return temp[len(temp) - 1] + "-" + str(unix)
+        elif temp[len(temp) - 2]:
+            return temp[len(temp) - 2] + "-" + str(unix)
+        else:
+            return str(unix)
